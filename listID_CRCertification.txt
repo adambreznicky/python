@@ -1,0 +1,26 @@
+
+##############
+Nick Grattan’s SharePoint Blog
+About Microsoft SharePoint and some .NET
+Finding the Id (Guid) for a SharePoint List
+with 36 comments
+
+There are times when you need to find the Id (a Guid) of a list – for example, when setting the Task list to be used with SharePoint Designer Workflows (see my blog post here). Here’s a simple way of doing this:
+
+Navigate to the SharePoint list using the browser.
+Select the Settings + List Settings menu command.
+Copy the Url from the browser address bar into Notepad. It will look something like:
+http://moss2007/ProjectX/_layouts/listedit.aspx?List=%7B26534EF9%2DAB3A%2D46E0%2DAE56%2DEFF168BE562F%7D
+
+Delete everying before and including “List=”.
+Change “%7B” to “{”
+Change all “%2D” to “-“
+Chnage “%7D” to “}”
+You are now left with the Id:
+
+{26534EF9-AB3A-46E0-AE56-EFF168BE562F}
+#############
+https://txdot.sharepoint.com/sites/division-tpp/MAD/_layouts/listedit.aspx?List=%7B0AEF97F0%2D027F%2D4D1C%2DA58C%2DA0784CE141C5%7D
+
+
+{0AEF97F0-027F-4D1C-A58C-A0784CE141C5}

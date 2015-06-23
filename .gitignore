@@ -80,6 +80,7 @@ target/
 *.shx
 *.qpj
 *.pyc
+*.avi
 
 Shortcut*
 .idea/

@@ -431,7 +431,7 @@ def email():
     message = """\From: %s\nTo: %s\nSubject: %s\n\n%s
                 """ % (FROM, ", ".join(TO), SUBJECT, TEXT)
     username = "adam.breznicky@txdot.gov"
-    password = base64.b64decode("RmVicnVhcnkxMjM=")
+    password = ""
     server = smtplib.SMTP('owa.txdot.gov', 25)
     server.ehlo()
     server.starttls()

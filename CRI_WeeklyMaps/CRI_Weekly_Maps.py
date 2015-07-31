@@ -2,6 +2,7 @@ __date__ = '8/12/2014'
 __author__ = 'ABREZNIC'
 import os, shutil, smtplib, base64, arcpy
 import datetime
+import mohawk
 
 now = datetime.datetime.now()
 curMonth = now.strftime("%m")
@@ -431,7 +432,7 @@ def email():
     message = """\From: %s\nTo: %s\nSubject: %s\n\n%s
                 """ % (FROM, ", ".join(TO), SUBJECT, TEXT)
     username = "adam.breznicky@txdot.gov"
-    password = ""
+    password = mohawk.hangnail(username)
     server = smtplib.SMTP('owa.txdot.gov', 25)
     server.ehlo()
     server.starttls()

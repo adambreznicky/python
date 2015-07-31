@@ -81,6 +81,7 @@ target/
 *.qpj
 *.pyc
 *.avi
+*mohawk.py
 
 Shortcut*
 .idea/

@@ -1,5 +1,5 @@
-__file__ = 'IRI_v6'
-__date__ = '1/5/2016'
+__file__ = 'IRI_v7'
+__date__ = '1/28/2016'
 __author__ = 'ABREZNIC'
 import arcpy, os, datetime, csv
 
@@ -94,8 +94,8 @@ for excel in inputlist:
 
     data = []
     lg = []
-    fields = ["ROUTE_ID", "BEGIN_POIN", "END_POINT", "SECTION_LE", "IRI", "RUTTING", "DATE"]
-    # fields = ["ROUTE_ID", "BEGIN_POINT", "END_POINT", "SECTION_LENGTH", "IRI", "RUTTING", "DATE", "RU", "F_SYSTEM", "SEC_NHS", "HPMS"]
+    fields = ["ROUTE_ID", "BEGIN_POIN", "END_POINT", "SECTION_LE", "IRI", "RUTTING", "DATE", "LANE"]
+    # fields = ["ROUTE_ID", "BEGIN_POIN", "END_POINT", "SECTION_LE", "IRI", "RUTTING", "DATE"]
     data.append(fields)
     lg.append(fields)
 
@@ -110,12 +110,14 @@ for excel in inputlist:
 
     initial = 0
     ids = []
-    cursor = arcpy.da.SearchCursor(pntfeature, ["ROUTE_ID"])
+    cursor = arcpy.da.SearchCursor(pntfeature, ["ROUTE_ID", "LANE"])
     for row in cursor:
         id = row[0]
+        lane = row[1]
+        combo = id + "-" + lane
         initial += 1
-        if id not in ids:
-            ids.append(id)
+        if combo not in ids:
+            ids.append(combo)
     del cursor
     del row
     arcpy.AddMessage("RTE_IDs compiled.")
@@ -144,12 +146,14 @@ for excel in inputlist:
     counter = 1
     total = len(ids)
     arcpy.AddMessage("Finding measures for: ")
-    for id in ids:
+    for combo in ids:
+        id = combo.split("-")[0] + "-" + combo.split("-")[1]
+        lane = combo.split("-")[2]
         roadslayer.definitionQuery = " RIA_RTE_ID = '" + id + "' "
-        pointslayer.definitionQuery = " ROUTE_ID = '" + id + "' "
+        pointslayer.definitionQuery = " ROUTE_ID = '" + id + "' AND LANE = '" + lane + "'"
         arcpy.RefreshActiveView()
-        arcpy.AddMessage(str(counter) + "/" + str(total) + " " + id)
-        label = id.replace("-", "")
+        arcpy.AddMessage(str(counter) + "/" + str(total) + " " + combo)
+        label = combo.replace("-", "")
         arcpy.LocateFeaturesAlongRoutes_lr(pointslayer, roadslayer, "FLAG", "230 Feet", workspace + os.sep + label, "FLAG POINT END_POINT")
         counter += 1
     arcpy.AddMessage("Tables created.")
@@ -257,7 +261,7 @@ for excel in inputlist:
     KGcounter = 0
     LGlength = 0
     KGlength = 0
-    cursor = arcpy.da.SearchCursor(workspace + os.sep + "merged", fields)
+    cursor = arcpy.da.SearchCursor(workspace + os.sep + "merged", fields, None, None, False, (None, "ORDER BY ROUTE_ID ASC, LANE ASC, BEGIN_POIN ASC"))
     for row in cursor:
         id = row[0]
         if id[-2:] == "LG":
@@ -267,7 +271,7 @@ for excel in inputlist:
         elif id[-2:] == "RG":
             THEid = id[:-2]
             newid = THEid + "KG"
-            fixed = [newid, row[1], row[2], row[3], row[4], row[5], row[6]]
+            fixed = [newid, row[1], row[2], row[3], row[4], row[5], row[6], row[7]]
             # fixed = [newid, row[1], row[2], row[3], row[4], row[5], row[6], row[7], row[8], row[9], row[10]]
             data.append(fixed)
             KGcounter += 1
@@ -301,7 +305,7 @@ for excel in inputlist:
     writer.writerows(data)
     final.close()
     arcpy.AddMessage("CSV written locally.")
-
+    arcpy.AddMessage("T:\\DATAMGT\\HPMS-DATA\\2015Data\\Pavement\\IRI\\IRIData\\Output_From_Script" + os.sep + distName + "_LG.csv")
     leftover = open("T:\\DATAMGT\\HPMS-DATA\\2015Data\\Pavement\\IRI\\IRIData\\Output_From_Script" + os.sep + distName + "_LG.csv", 'wb')
     writer = csv.writer(leftover)
     writer.writerows(lg)

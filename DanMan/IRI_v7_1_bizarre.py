@@ -119,7 +119,7 @@ for excel in inputlist:
 
     data = []
     lg = []
-    fields = ["ROUTE_ID", "BEGIN_POIN", "END_POINT", "SECTION_LE", "IRI", "RUTTING", "DATE", "LANE"]
+    fields = ["ROUTE_ID", "BEGIN_POIN", "END_POINT", "SECTION_LE", "IRI", "RUTTING", "DATE", "TIME", "LANE"]
     # fields = ["ROUTE_ID", "BEGIN_POIN", "END_POINT", "SECTION_LE", "IRI", "RUTTING", "DATE"]
     data.append(fields)
     lg.append(fields)
@@ -297,7 +297,7 @@ for excel in inputlist:
         elif id[-2:] == "RG":
             THEid = id[:-2]
             newid = THEid + "KG"
-            fixed = [newid, row[1], row[2], row[3], row[4], row[5], row[6], row[7]]
+            fixed = [newid, row[1], row[2], row[3], row[4], row[5], row[6], row[7], row[8]]
             # fixed = [newid, row[1], row[2], row[3], row[4], row[5], row[6], row[7], row[8], row[9], row[10]]
             data.append(fixed)
             KGcounter += 1
@@ -332,17 +332,17 @@ for excel in inputlist:
     final.close()
     arcpy.AddMessage("CSV written locally.")
     arcpy.AddMessage("T:\\DATAMGT\\HPMS-DATA\\2015Data\\Pavement\\IRI\\IRIData\\Output_From_Script" + os.sep + distName + "_LG.csv")
-    leftover = open("T:\\DATAMGT\\HPMS-DATA\\2015Data\\Pavement\\IRI\\IRIData\\Output_From_Script" + os.sep + distName + "_LG_Bizarre.csv", 'wb')
+    leftover = open("T:\\DATAMGT\\HPMS-DATA\\2015Data\\Pavement\\IRI\\IRIData\\Output_From_Script" + os.sep + distName + "_LG.csv", 'wb')
     writer = csv.writer(leftover)
     writer.writerows(lg)
     leftover.close()
-    final = open("T:\\DATAMGT\\HPMS-DATA\\2015Data\\Pavement\\IRI\\IRIData\\Output_From_Script" + os.sep + distName + "_Plotted_Bizarre.csv", 'wb')
+    final = open("T:\\DATAMGT\\HPMS-DATA\\2015Data\\Pavement\\IRI\\IRIData\\Output_From_Script" + os.sep + distName + "_Plotted.csv", 'wb')
     writer = csv.writer(final)
     writer.writerows(data)
     final.close()
     arcpy.AddMessage("CSV written to T drive.")
 
-    pointsName = distName.split("_")[-1] + "bizarre"
+    pointsName = distName.split("_")[-1]
     arcpy.FeatureClassToFeatureClass_conversion(pntfeature, "T:\\DATAMGT\\HPMS-DATA\\2015Data\\Pavement\\IRI\\IRIData\\Output_From_Script\\All_Points.gdb", pointsName)
     arcpy.AddMessage("allpoints feature class transferred to T drive.")
 

@@ -112,7 +112,7 @@ dbf_List = []
 for excel in inputlist:
     csv_name = excel.split("\\")[-1]
     dist_name = csv_name.split("_")[0].replace(" ", "")
-
+    arcpy.AddMessage(dist_name)
     csv_bundle = []
     f = open(excel, 'rt')
     reader = csv.reader(f)

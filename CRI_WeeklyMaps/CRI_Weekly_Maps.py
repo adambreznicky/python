@@ -433,7 +433,8 @@ def email():
                 """ % (FROM, ", ".join(TO), SUBJECT, TEXT)
     username = "adam.breznicky@txdot.gov"
     password = mohawk.hangnail(username)
-    server = smtplib.SMTP('owa.txdot.gov', 25)
+    # server = smtplib.SMTP('owa.txdot.gov', 25)
+    server = smtplib.SMTP('owa.txdot.gov', 587)
     server.ehlo()
     server.starttls()
     server.ehlo()
@@ -445,6 +446,6 @@ def email():
 tracking()
 status()
 tcopy()
-email()
+# email()
 
 print "that's all folks!"

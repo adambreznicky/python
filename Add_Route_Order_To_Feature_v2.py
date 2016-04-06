@@ -10,7 +10,7 @@ previous = ""
 counter = 0
 NEW_ORDER = 1
 
-cursor = arcpy.da.SearchCursor(roads_feature_class, [route_id_field, rte_order_field, dfo_field], "", "", "", (None, "ORDER BY " + route_id_field + " ASC, " + dfo_field + " ASC"))
+cursor = arcpy.da.UpdateCursor(roads_feature_class, [route_id_field, rte_order_field, dfo_field], "", "", "", (None, "ORDER BY " + route_id_field + " ASC, " + dfo_field + " ASC"))
 for row in cursor:
     current = row[0]
     if counter == 0:

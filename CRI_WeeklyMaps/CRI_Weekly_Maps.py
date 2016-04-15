@@ -82,7 +82,7 @@ def tracking():
         deci = str(differguy).split(".")[1][:2]
         numsz = integ + "." + deci
 
-        differguy2 = float(counter) / float(115) * 100
+        differguy2 = float(counter) / float(139) * 100
         integ2 = str(differguy2).split(".")[0]
         deci2 = str(differguy2).split(".")[1][:2]
         numsz2 = integ2 + "." + deci2
@@ -445,7 +445,7 @@ def email():
 
 tracking()
 status()
-tcopy()
+# tcopy()
 # email()
 
 print "that's all folks!"

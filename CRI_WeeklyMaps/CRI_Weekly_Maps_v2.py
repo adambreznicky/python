@@ -1,11 +1,32 @@
-__date__ = '8/12/2014'
+__date__ = '4/15/2014'
 __author__ = 'ABREZNIC'
+"""
+The MIT License (MIT)
+
+Copyright (c) 2016 Texas Department of Transportation
+Author: Adam Breznicky
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in
+all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+THE SOFTWARE.
+"""
+
 import os, shutil, arcpy
 import datetime
-
-# set variables
-weekly_maps_folder = "C:\\TxDOT\\CountyRoadInventory\\_Progress Maps"
-exported_cri_sharepoint_excel_name = "County Road Certification.xlsx"
 
 # global variables/date variables
 now = datetime.datetime.now()
@@ -14,9 +35,15 @@ curDay = now.strftime("%d")
 curYear = now.strftime("%Y")
 curDate = curMonth + "_" + curDay + "_" + curYear
 runday = now.strftime("%B") + " " + curDay + ", " + curYear
+
+weekly_maps_folder = os.path.dirname(__file__)
 house = weekly_maps_folder + os.sep + curYear + os.sep + curDate
+exported_cri_sharepoint_excel_name = "CountyRoadCertification_SharepointExport.xlsx"
 arcpy.env.workspace = "in_memory"
 sharepoint_table = {}
+
+
+print "working out of: " + os.sep + weekly_maps_folder
 
 
 def build_sharepoint_dict():
@@ -24,7 +51,7 @@ def build_sharepoint_dict():
     print "converting excel sheet"
     arcpy.ExcelToTable_conversion(exported_table, "table")
 
-    print "iterating"
+    print "iterating excel sheet"
     cursor = arcpy.da.SearchCursor("table", ["County", "Update_Yea", "Status", "Needs_Upda", "Inital_Mar", "Needs_Fiel", "Data_Colle", "Comanche_U"])
     for row in cursor:
         if row[1] == curYear:
@@ -34,6 +61,7 @@ def build_sharepoint_dict():
 
 
 def make_directories():
+    print "making directory to put the maps in"
     if os.path.exists(weekly_maps_folder + os.sep + curYear):
         if os.path.exists(weekly_maps_folder + os.sep + curYear + os.sep + curDate):
             shutil.rmtree(weekly_maps_folder + os.sep + curYear + os.sep + curDate)
@@ -49,7 +77,7 @@ def tracking():
     statusMap = arcpy.mapping.MapDocument(weekly_maps_folder + "\\CRI_TRACKING.mxd")
     dataFrame = arcpy.mapping.ListDataFrames(statusMap)[0]
     newextent = dataFrame.extent
-
+    print "compiling the changes"
     dict = {}
     counter = 0
     comper = 0
@@ -69,10 +97,11 @@ def tracking():
 
     #north county:
     if int(curYear) % 2 == 0:
+        print "working the north side"
         newextent.XMin, newextent.YMin = 582786.47000423, 826927.373313854
         newextent.XMax, newextent.YMax = 1687689.94133357, 1600359.80324447
         dataFrame.extent = newextent
-
+        print "updating changes"
         cursor = arcpy.da.UpdateCursor(weekly_maps_folder + "\\Tracking_Shapefiles\\NorthCounties.shp", ["status", "CNTY_NM"])
         for row in cursor:
             row[0] = "No Response"
@@ -82,7 +111,7 @@ def tracking():
                 row[0] = dict[cnty]
             cursor.updateRow(row)
         del cursor
-
+        print "doing math"
         differguy = float(comper) / float(counter) * 100
         integ = str(differguy).split(".")[0]
         deci = str(differguy).split(".")[1][:2]
@@ -129,10 +158,11 @@ def tracking():
     #
     # south county
     elif int(curYear) % 2 != 0:
+        print "working the south side"
         newextent.XMin, newextent.YMin = 364911.216382526, 350798.309516114
         newextent.XMax, newextent.YMax = 1628319.75219708, 1235184.28458639
         dataFrame.extent = newextent
-
+        print "updating changes"
         cursor = arcpy.da.UpdateCursor(weekly_maps_folder + "\\Tracking_Shapefiles\SouthCounties.shp", ["status", "CNTY_NM"])
         for row in cursor:
             row[0] = "No Response"
@@ -142,7 +172,7 @@ def tracking():
                 row[0] = dict[cnty]
             cursor.updateRow(row)
         del cursor
-
+        print "doing math"
         differguy = float(comper) / float(counter) * 100
         integ = str(differguy).split(".")[0]
         deci = str(differguy).split(".")[1][:2]
@@ -194,7 +224,7 @@ def status():
     statusMap = arcpy.mapping.MapDocument(weekly_maps_folder + "\\CRI_STATUS.mxd")
     dataFrame = arcpy.mapping.ListDataFrames(statusMap)[0]
     newextent = dataFrame.extent
-
+    print "compiling the changes"
     dict = {}
     counter = 0
     comper = 0
@@ -221,10 +251,11 @@ def status():
 
     #north county:
     if int(curYear) % 2 == 0:
+        print "working the north side"
         newextent.XMin, newextent.YMin = 582786.47000423, 826927.373313854
         newextent.XMax, newextent.YMax = 1687689.94133357, 1600359.80324447
         dataFrame.extent = newextent
-
+        print "updating changes"
         cursor = arcpy.da.UpdateCursor(weekly_maps_folder + "\\Status_Shapefiles\\NorthCounties.shp", ["mrk_status", "CNTY_NM"])
         for row in cursor:
             row[0] = ""
@@ -236,7 +267,7 @@ def status():
         del cursor
         if counter == 0:
             counter += 1
-
+        print "doing math"
         differguy = float(comper) / float(counter) * 100
         integ = str(differguy).split(".")[0]
         deci = str(differguy).split(".")[1][:2]
@@ -273,10 +304,11 @@ def status():
     #
     # south county
     elif int(curYear) % 2 != 0:
+        print "working the south side"
         newextent.XMin, newextent.YMin = 364911.216382526, 350798.309516114
         newextent.XMax, newextent.YMax = 1628319.75219708, 1235184.28458639
         dataFrame.extent = newextent
-
+        print "updating changes"
         cursor = arcpy.da.UpdateCursor(weekly_maps_folder + "\\Status_Shapefiles\\SouthCounties.shp", ["mrk_status", "CNTY_NM"])
         for row in cursor:
             row[0] = ""
@@ -288,7 +320,7 @@ def status():
         del cursor
         if counter == 0:
             counter += 1
-
+        print "doing math"
         differguy = float(comper) / float(counter) * 100
         integ = str(differguy).split(".")[0]
         deci = str(differguy).split(".")[1][:2]
@@ -327,6 +359,7 @@ def status():
 
 
 def tcopy():
+    print "doing the T-drive copy shuffle"
     cri = "T:\\DATAMGT\\MAPPING\\Data Collection\\Core Projects\\CountyRoad"
     if os.path.exists(cri + os.sep + curYear):
         if os.path.exists(cri + os.sep + curYear + os.sep + "_Progress Maps"):

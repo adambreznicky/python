@@ -43,7 +43,7 @@ arcpy.env.workspace = "in_memory"
 sharepoint_table = {}
 
 
-print "working out of: " + os.sep + weekly_maps_folder
+print "working out of: " + weekly_maps_folder
 
 
 def build_sharepoint_dict():
@@ -65,6 +65,7 @@ def make_directories():
     if os.path.exists(weekly_maps_folder + os.sep + curYear):
         if os.path.exists(weekly_maps_folder + os.sep + curYear + os.sep + curDate):
             shutil.rmtree(weekly_maps_folder + os.sep + curYear + os.sep + curDate)
+            os.makedirs(weekly_maps_folder + os.sep + curYear + os.sep + curDate)
         else:
             os.makedirs(weekly_maps_folder + os.sep + curYear + os.sep + curDate)
     else:
@@ -364,7 +365,7 @@ def tcopy():
     if os.path.exists(cri + os.sep + curYear):
         if os.path.exists(cri + os.sep + curYear + os.sep + "_Progress Maps"):
             if os.path.exists(cri + os.sep + curYear + os.sep + "_Progress Maps" + os.sep + curDate):
-                shutil.rmtree(weekly_maps_folder + os.sep + curYear + os.sep + curDate)
+                shutil.rmtree(cri + os.sep + curYear + os.sep + "_Progress Maps" + os.sep + curDate)
             os.makedirs(cri + os.sep + curYear + os.sep + "_Progress Maps" + os.sep + curDate)
         else:
             os.makedirs(cri + os.sep + curYear + os.sep + "_Progress Maps")
@@ -373,7 +374,7 @@ def tcopy():
         os.makedirs(cri + os.sep + curYear)
         os.makedirs(cri + os.sep + curYear + os.sep + "_Progress Maps")
         os.makedirs(cri + os.sep + curYear + os.sep + "_Progress Maps" + os.sep + curDate)
-    tdrive = "T:\\DATAMGT\\MAPPING\\Data Collection\\Core Projects\\CountyRoad\\" + curYear + os.sep + "_Progress Maps" + os.sep + curDate
+    tdrive = cri + os.sep + curYear + os.sep + "_Progress Maps" + os.sep + curDate
     shutil.copy(weekly_maps_folder + os.sep + curYear + os.sep + curDate + os.sep + "TrackingMap" + curDate + ".pdf", tdrive)
     shutil.copy(weekly_maps_folder + os.sep + curYear + os.sep + curDate + os.sep + "StatusMap" + curDate + ".pdf", tdrive)
     print "Maps copied to T-drive."
